@@ -1,0 +1,70 @@
+#define force_sensor 34
+#define ADXL_X  35
+#define ADXL_Y  33
+#define ADXL_Z  32
+
+int force_value;
+float voltage;
+
+int ADXL_X_value;
+int ADXL_Y_value;
+int ADXL_Z_value;
+
+int force_threshold  = 2000;
+
+void setup() 
+{
+  pinMode(force_sensor, INPUT);
+  pinMode(ADXL_X, INPUT);
+  pinMode(ADXL_Y, INPUT);
+  pinMode(ADXL_Z, INPUT);
+  Serial.begin(9600);
+
+}
+
+void loop()
+{
+  read_force();
+  adxl_read();
+
+  if(force_value > force_threshold)
+  {
+    Serial.println(" More force detected ");
+  }
+
+  if(ADXL_X_value < 2000 && ADXL_X_value > 1600)
+  {
+    Serial.println("Normal Walking");
+    
+  }
+
+  if(ADXL_X_value > 2100 || ADXL_X_value < 1500)
+  {
+    Serial.println(" Uneven Walk detected");
+  }
+  
+}
+
+void read_force()
+{
+  force_value = analogRead(force_sensor);
+  voltage = force_value*(3.3/4095);
+  Serial.print("Force value :");
+  Serial.println(force_value);
+  //Serial.println(voltage);
+  delay(1000);
+}
+
+void adxl_read()
+{
+  ADXL_X_value = analogRead(ADXL_X);
+  ADXL_Y_value = analogRead(ADXL_Y);
+  ADXL_Z_value = analogRead(ADXL_Z);
+
+  Serial.print(" X Axis : ");
+  Serial.print(ADXL_X_value);
+  Serial.print(" , Y Axis : ");
+  Serial.print(ADXL_Y_value);
+  Serial.print(" , Z Axis : ");
+  Serial.println(ADXL_Z_value);
+}
